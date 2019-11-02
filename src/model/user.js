@@ -26,7 +26,7 @@ const userSchema = mongoose.Schema({
 });
 
 const capabilities = {
-  admin: ['create', 'read', 'update', 'delete'],
+  admin: ['create', 'read', 'update', 'delete', 'superuser'],
   editor: ['create', 'read', 'update'],
   user: ['read'],
 };
@@ -35,14 +35,8 @@ userSchema.pre('save', async function () {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 10);
   }
-
   try {
     let userRole = await Role.findOne({ role: this.role });
-    if (!userRole) {
-      userRole = new Role({ role: this.role, capabilities: capabilities[this.role] });
-      await userRole.save();
-    }
-    console.log(userRole);
   } catch (err) {
     console.Error(`ERROR ${err}`);
   }
