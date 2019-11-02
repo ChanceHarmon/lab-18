@@ -4,7 +4,6 @@ const express = require('express');
 const apiRouter = express.Router();
 
 const User = require('./model/user.js');
-const Article = require('./model/article.js');
 const auth = require('./middleware/auth.js');
 const oauth = require('./oauth/google.js');
 
@@ -39,15 +38,5 @@ apiRouter.post('/key', auth(), (req, res, next) => {
   let key = req.user.generateKey();
   res.status(200).send(key);
 });
-
-apiRouter.post('/article', auth('create'), (req, res, next) => {
-  let article = new Article(req.body);
-  article.save()
-    .then(article => {
-      res.status(200);
-      res.send(article);
-    })
-    .catch(next)
-})
 
 module.exports = apiRouter;
